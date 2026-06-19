@@ -16,7 +16,7 @@ from deep_translator import GoogleTranslator
 
 # --- Windows Tesseract Configuration ---
 # If running on Windows, uncomment the line below and map it to your local Tesseract install folder:
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # ----------------- 1. DATABASE & ENGINES -----------------
 def init_local_db():
