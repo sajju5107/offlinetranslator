@@ -1,0 +1,4 @@
+tesseract-ocr
+ffmpeg
+espeak
+libespeak1
