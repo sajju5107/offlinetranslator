@@ -15,7 +15,8 @@ import speech_recognition as sr
 from deep_translator import GoogleTranslator
 
 # --- Windows Tesseract Configuration ---
-# If running on Windows, uncomment the line below and map it to your local Tesseract install folder:
+# Leave this COMMENTED OUT (#) for Streamlit Cloud deployment!
+# If you run this locally on Windows, remove the # on the line below:
 # pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # ----------------- 1. DATABASE & ENGINES -----------------
@@ -75,9 +76,18 @@ def perform_tts(text, lang_code, mode):
         tts.save("temp_speech.mp3")
         st.audio("temp_speech.mp3", format="audio/mp3", autoplay=True)
     else:
-        engine = pyttsx3.init()
-        engine.say(text)
-        engine.runAndWait()
+        try:
+            # Attempt to use local desktop audio (Works on local Windows PC)
+            engine = pyttsx3.init()
+            engine.save_to_file(text, "temp_offline.mp3")
+            engine.runAndWait()
+            st.audio("temp_offline.mp3", format="audio/mp3", autoplay=True)
+        except Exception:
+            # CLOUD FALLBACK: If running on Streamlit Cloud (no sound card), route to web audio
+            online_code = get_online_lang_code(lang_code)
+            tts = gTTS(text=text, lang=online_code)
+            tts.save("temp_speech.mp3")
+            st.audio("temp_speech.mp3", format="audio/mp3", autoplay=True)
 
 def log_to_history(text, translated, src_name, tgt_name, mode):
     conn = sqlite3.connect('global_translator.db')
